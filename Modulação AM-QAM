@@ -1,0 +1,80 @@
+%Eletrônca
+%Projeto:Modulação AM-QAM
+%Professor:Jose Gutembergue De Assis Lira
+%Programadores: 
+%Edvaldo Raniere F. S. Santos
+%Wendel Arkell Bezerra De Menezes
+
+close all; clear; clc;
+
+%Modulação AM-QAM
+
+%Sinais Modulantes
+
+%Sinal Modulante m1:
+dt = 0.002;
+T = 20;
+M = 3;
+t = [0:dt:T-dt];
+gt = zeros(1,size(t,2));
+for i=1:size(t,2)
+    if(t(i)<=10)
+        gt(i) = 0.2.*t(i)-1;
+    elseif(10<=t(i)<=20)
+        gt(i) = -0.2.*t(i)+3;
+    end
+end
+tempo1 = [];
+gt_periodico = [];
+
+for i=-M:M-1
+    tempo1 = [tempo1 i.*T+t];
+    gt_periodico = [gt_periodico gt];
+end
+
+%Sinal Modulante m2:
+oldparam = sympref('HeavisideAtOrigin',1);
+gq = (heaviside(t)-heaviside(t-10));
+tempo2 = [];
+gq_periodico = [];
+
+for i=-M:M-1
+    tempo2 = [tempo2 i*T+t];
+    gq_periodico = [gq_periodico gq];
+end
+
+%Sinal AM-QAM
+wc = 10;
+
+%m1cos(wct)
+S1_qam = cos(wc.*tempo1).*gt_periodico;
+figure(1)
+hold on
+plot(tempo1,gt_periodico,'--r','LineWidth',2.0);
+plot(tempo1,S1_qam);
+grid on
+
+%m2sin(wct)
+S2_qam = sin(wc.*tempo2).*gq_periodico;
+figure(2)
+hold on
+plot(tempo2,gq_periodico,'--r','LineWidth',2.0);
+plot(tempo2,S2_qam);
+grid on
+
+%Onda triangular
+figure(3)
+plot(tempo1,gt_periodico,'r','LineWidth',2.0);
+title('Onda Triangular');
+ylabel('g_{t}(t)');
+xlabel('t');
+grid on;
+
+%Onda Quadrada
+figure(4)
+plot(tempo2,gq_periodico,'b','LineWidth',2.0);
+title('Onda quadrada g_{q}(t)');
+ylabel('g_{q}(t)');
+xlabel('t(ms)');
+grid on;
+
